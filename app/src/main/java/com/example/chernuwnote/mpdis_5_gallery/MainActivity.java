@@ -1,57 +1,77 @@
 package com.example.chernuwnote.mpdis_5_gallery;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 
-import java.io.IOException;
+public class MainActivity extends Activity {
 
-public class MainActivity extends AppCompatActivity {
-
-    static final int GALLERY_REQUEST = 1;
+    ListView listView;
+    private ImageView selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button)findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        selectedImage = (ImageView)findViewById(R.id.imageView1);
+
+        listView = (ListView) findViewById(R.id.list);
+
+        String[] values = new String[] {
+                "Flowers",
+                "gruwa",
+                "les",
+                "pole",
+                "tlen",
+                "yabloki"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             @Override
-            public void onClick(View v) {
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, GALLERY_REQUEST);
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
+                int itemPosition = arg2;
+                String itemValue = (String) listView.getItemAtPosition(arg2);
+
+                switch(itemPosition)
+                {
+                    case 0:
+                        selectedImage.setImageResource(R.drawable.flowers);
+                        break;
+
+                    case 1:
+                        selectedImage.setImageResource(R.drawable.gruwa);
+                        break;
+
+                    case 2:
+                        selectedImage.setImageResource(R.drawable.les);
+                        break;
+
+                    case 3:
+                        selectedImage.setImageResource(R.drawable.pole);
+                        break;
+
+                    case 4:
+                        selectedImage.setImageResource(R.drawable.tlen);
+                        break;
+
+                    case 5:
+                        selectedImage.setImageResource(R.drawable.yabloki);
+                        break;
+                }
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-
-        Bitmap bitmap = null;
-        ImageView imageView = (ImageView) findViewById(R.id.icon);
-
-        switch(requestCode) {
-            case GALLERY_REQUEST:
-                if(resultCode == RESULT_OK){
-                    Uri selectedImage = imageReturnedIntent.getData();
-                    try {
-                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    imageView.setImageBitmap(bitmap);
-                }
-        }
     }
 
 }
